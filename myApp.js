@@ -1,8 +1,16 @@
-angular.module("SDA", [])
-    .controller("usersCtrl", function ($scope, $http) {
+angular.module("SDA", ['ngResource'])
+    .controller("usersCtrl", function ($scope, $resource) {
 
-        var promise = $http.get("https://jsonplaceholder.typicode.com/users").then(function (res) {
-            $scope.users = res.data;
+        // GET      -> /users/{id}
+        // POST     -> /users
+        // PUT      -> /users lub   PUT -> /users/{id}
+        // DELETE   -> /users/{id}
+
+        var Users = $resource("https://jsonplaceholder.typicode.com/users");
+
+        $scope.users = Users.query(function (users) {
+        }, function () {
+            $scope.error = true;
         });
 
         $scope.loading = true;
@@ -24,7 +32,7 @@ angular.module("SDA", [])
         $scope.addUser = function () {
             $scope.users.push({
                 username: $scope.newName,
-                role: $scope.newPhone
+                phone: $scope.newPhone
             });
             $scope.newName = "";
             $scope.newPhone = "";
